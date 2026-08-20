@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ma Page d'Accueil</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --card-hover: #334155;
+      --text-color: #f8fafc;
+      --accent-color: #38bdf8;
+      --danger-color: #ef4444;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      height: 100vh;
+      overflow: hidden;
+    }
+    .layout {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+    }
+    /* Section Cabanga (2/3) */
+    .cabanga-container {
+      flex: 2;
+      height: 100%;
+      border-right: 2px solid #334155;
+    }
+    .cabanga-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    /* Section Outils & Raccourcis (1/3) */
+    .sidebar {
+      flex: 1;
+      height: 100%;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    /* Horloge & Timer Widget */
+    .widget-clock {
+      text-align: center;
+      background: var(--card-bg);
+      padding: 12px;
+      border-radius: 12px;
+    }
+    #clock-display {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--accent-color);
+      font-variant-numeric: tabular-nums;
+    }
+    #clock-display.timer-active {
+      color: #f59e0b;
+    }
+    #clock-display.timer-ended {
+      color: var(--danger-color);
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    #date {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      text-transform: capitalize;
+      margin-top: 4px;
+    }
+    /* Contrôles du Timer */
+    .timer-controls {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .timer-controls input {
+      width: 50px;
+      padding: 4px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #fff;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    .timer-controls button {
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: none;
+      background: var(--accent-color);
+      color: #0f172a;
+      font-weight: bold;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .timer-controls button:hover {
+      opacity: 0.85;
+    }
+    .timer-controls button.reset-btn {
+      background: var(--danger-color);
+      color: #fff;
+      display: none;
+    }
+
+    /* Recherche */
+    .search-box input {
+      width: 100%;
+      padding: 10px 16px;
+      border-radius: 25px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      outline: none;
+      background: var(--card-bg);
+      color: #fff;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .search-box input:focus {
+      border-color: var(--accent-color);
+    }
+    /* Raccourcis Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 8px;
+    }
+    .card {
+      background: var(--card-bg);
+      padding: 10px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text-color);
+      font-size: 0.8rem;
+      text-align: center;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .card:hover {
+      background: var(--card-hover);
+      color: var(--accent-color);
+      transform: translateY(-2px);
+    }
+    /* Blocs-Notes compacts */
+    .doc-container {
+      height: 180px;
+      background: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .doc-header {
+      padding: 6px 12px;
+      background: rgba(0,0,0,0.25);
+      font-size: 0.8rem;
+      color: #94a3b8;
+      font-weight: bold;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .doc-container iframe {
+      width: 100%;
+      flex: 1;
+      border: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .layout { flex-direction: column; overflow: auto; }
+      body { overflow: auto; }
+      .cabanga-container { height: 60vh; flex: none; }
+      .sidebar { height: auto; flex: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout">
+    <!-- Zone Cabanga (2/3) -->
+    <div class="cabanga-container">
+      <iframe src="https://app.cabanga.be" title="Cabanga"></iframe>
+    </div>
+
+    <!-- Sidebar Droite (1/3) -->
+    <div class="sidebar">
+      <!-- Widget Horloge / Compte à rebours -->
+      <div class="widget-clock">
+        <div id="clock-display">00:00:00</div>
+        <div id="date">Chargement...</div>
+
+        <!-- Formulaire Compte à rebours -->
+        <div class="timer-controls">
+          <input type="number" id="timer-min" placeholder="Min" min="0" max="999">
+          <input type="number" id="timer-sec" placeholder="Sec" min="0" max="59">
+          <button id="start-btn" onclick="startTimer()">Lancer</button>
+          <button id="reset-btn" class="reset-btn" onclick="resetTimer()">Horloge</button>
+        </div>
+      </div>
+
+      <!-- Recherche Google -->
+      <form class="search-box" action="https://www.google.com/search" method="get">
+        <input type="text" name="q" placeholder="Rechercher sur Google..." autocomplete="off">
+      </form>
+
+      <!-- Raccourcis -->
+      <div class="grid">
+        <a href="https://mail.google.com" target="_blank" class="card">Gmail</a>
+        <a href="https://drive.google.com" target="_blank" class="card">Drive</a>
+        <a href="https://youtube.com" target="_blank" class="card">YouTube</a>
+        <a href="https://gemini.google.com" target="_blank" class="card">Gemini</a>
+        <a href="https://sheets.google.com" target="_blank" class="card">Sheets</a>
+        <a href="https://classroom.google.com" target="_blank" class="card">Classroom</a>
+      </div>
+
+      <!-- Bloc-Notes 1 -->
+      <div class="doc-container">
+        <div class="doc-header">📝 5EQ3</div>
+        <iframe src="https://docs.google.com/document/d/1CaJsKxp4UemRsRMPKRHm972Hzycv5V5WPFVlGqqGVVQ/edit?rm=minimal"></iframe>
+      </div>
+
+      <!-- Bloc-Notes 2 -->
+      <div class="doc-container">
+        <div class="doc-header">📝 6EQ3</div>
+        <iframe src="https://docs.google.com/document/d/1a_WgrHCQn-Ybg3WUM0wVD9xT2iex4IUOGbaIE5hnstQ/edit?rm=minimal"></iframe>
+      </div>
+
+      <!-- Bloc-Notes 3 -->
+      <div class="doc-container">
+        <div class="doc-header">📝 6EQ4</div>
+        <iframe src="https://docs.google.com/document/d/1w_glBIeUALC0gacXvmKrz24orDMYQusZe9hWMXOOcpo/edit?rm=minimal"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let timerInterval = null;
+    let isTimerActive = false;
+    let remainingSeconds = 0;
+
+    // Fonction d'alarme sonore (3 Bips successifs sans fichier externe)
+    function playAlarmSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const delays = [0, 0.25, 0.5];
+
+        delays.forEach(delay => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, audioCtx.currentTime + delay); // Fréquence 880Hz
+          
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime + delay);
+          gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + delay + 0.2);
+          
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          
+          osc.start(audioCtx.currentTime + delay);
+          osc.stop(audioCtx.currentTime + delay + 0.2);
+        });
+      } catch (e) {
+        console.log("Erreur audio :", e);
+      }
+    }
+
+    // Mise à jour Horloge / Timer
+    function updateDisplay() {
+      const display = document.getElementById('clock-display');
+
+      if (!isTimerActive) {
+        const now = new Date();
+        display.textContent = now.toLocaleTimeString('fr-FR', { 
+          hour: '2-digit', 
+          minute: '2-digit', 
+          second: '2-digit' 
+        });
+        document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', { 
+          weekday: 'long', 
+          day: 'numeric', 
+          month: 'long' 
+        });
+      } else {
+        if (remainingSeconds <= 0) {
+          clearInterval(timerInterval);
+          display.textContent = "00:00:00";
+          display.className = "timer-ended";
+          document.getElementById('date').textContent = "⚠️ Temps écoulé !";
+          playAlarmSound();
+          return;
+        }
+
+        remainingSeconds--;
+        const hrs = Math.floor(remainingSeconds / 3600);
+        const mins = Math.floor((remainingSeconds % 3600) / 60);
+        const secs = remainingSeconds % 60;
+
+        display.textContent = 
+          String(hrs).padStart(2, '0') + ':' +
+          String(mins).padStart(2, '0') + ':' +
+          String(secs).padStart(2, '0');
+      }
+    }
+
+    function startTimer() {
+      const minInput = parseInt(document.getElementById('timer-min').value) || 0;
+      const secInput = parseInt(document.getElementById('timer-sec').value) || 0;
+
+      const totalSec = (minInput * 60) + secInput;
+      if (totalSec <= 0) return;
+
+      remainingSeconds = totalSec;
+      isTimerActive = true;
+
+      const display = document.getElementById('clock-display');
+      display.className = "timer-active";
+
+      document.getElementById('start-btn').style.display = 'none';
+      document.getElementById('reset-btn').style.display = 'inline-block';
+
+      updateDisplay();
+      clearInterval(timerInterval);
+      timerInterval = setInterval(updateDisplay, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isTimerActive = false;
+
+      const display = document.getElementById('clock-display');
+      display.className = "";
+
+      document.getElementById('timer-min').value = "";
+      document.getElementById('timer-sec').value = "";
+      document.getElementById('start-btn').style.display = 'inline-block';
+      document.getElementById('reset-btn').style.display = 'none';
+
+      updateDisplay();
+      timerInterval = setInterval(updateDisplay, 1000);
+    }
+
+    // Lancement par défaut de l'horloge
+    timerInterval = setInterval(updateDisplay, 1000);
+    updateDisplay();
+  </script>
+</body>
+</html>
