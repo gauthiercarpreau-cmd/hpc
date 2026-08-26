@@ -12,6 +12,8 @@
       --text-color: #f8fafc;
       --accent-color: #38bdf8;
       --danger-color: #ef4444;
+      --warning-color: #f59e0b;
+      --success-color: #10b981;
     }
     * {
       box-sizing: border-box;
@@ -30,18 +32,46 @@
       height: 100vh;
       width: 100vw;
     }
-    /* Section Cabanga (2/3) */
+    /* Section Cabanga (2/3 de l'écran) */
     .cabanga-container {
       flex: 2;
       height: 100%;
       border-right: 2px solid #334155;
+      position: relative;
     }
     .cabanga-container iframe {
       width: 100%;
       height: 100%;
       border: none;
     }
-    /* Section Outils & Raccourcis (1/3) */
+    .login-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      z-index: 10;
+    }
+    .login-btn {
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: bold;
+      background: var(--accent-color);
+      color: #0f172a;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .login-btn:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    /* Sidebar (1/3 de l'écran) */
     .sidebar {
       flex: 1;
       height: 100%;
@@ -51,23 +81,62 @@
       flex-direction: column;
       gap: 16px;
     }
-    /* Horloge & Timer Widget */
+
+    /* Layout Côte à Côte : Horloge & Tirage */
+    .top-widgets-row {
+      display: flex;
+      gap: 12px;
+    }
+    .top-widgets-row > div {
+      flex: 1;
+    }
+
+    /* Widget Horloge & Minuteur */
     .widget-clock {
       text-align: center;
       background: var(--card-bg);
       padding: 12px;
       border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .clock-section {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 6px;
     }
     #clock-display {
-      font-size: 2.2rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: var(--accent-color);
       font-variant-numeric: tabular-nums;
     }
-    #clock-display.timer-active {
-      color: #f59e0b;
+    #date {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: capitalize;
     }
-    #clock-display.timer-ended {
+    .weather-info {
+      font-size: 0.75rem;
+      color: var(--accent-color);
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    /* Minuteur */
+    .timer-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    #timer-display {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--warning-color);
+      font-variant-numeric: tabular-nums;
+    }
+    #timer-display.timer-ended {
       color: var(--danger-color);
       animation: pulse 1s infinite;
     }
@@ -75,50 +144,212 @@
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
     }
-    #date {
-      font-size: 0.9rem;
-      color: #94a3b8;
-      text-transform: capitalize;
-      margin-top: 4px;
-    }
-    /* Contrôles du Timer */
     .timer-controls {
       display: flex;
       justify-content: center;
-      gap: 6px;
-      margin-top: 8px;
+      gap: 4px;
     }
     .timer-controls input {
-      width: 50px;
-      padding: 4px;
+      width: 42px;
+      padding: 3px;
       border-radius: 6px;
       border: 1px solid #334155;
       background: #0f172a;
       color: #fff;
       text-align: center;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
     }
-    .timer-controls button {
-      padding: 4px 10px;
+    .timer-controls button, .quick-timer-btn {
+      padding: 3px 8px;
       border-radius: 6px;
       border: none;
       background: var(--accent-color);
       color: #0f172a;
       font-weight: bold;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       cursor: pointer;
-      transition: opacity 0.2s;
     }
-    .timer-controls button:hover {
-      opacity: 0.85;
+    .quick-timers {
+      display: flex;
+      justify-content: center;
+      gap: 3px;
+      flex-wrap: wrap;
+    }
+    .quick-timer-btn {
+      background: #334155;
+      color: var(--text-color);
+      padding: 3px 6px;
+      font-size: 0.7rem;
+    }
+    .quick-timer-btn:hover {
+      background: var(--accent-color);
+      color: #0f172a;
     }
     .timer-controls button.reset-btn {
       background: var(--danger-color);
       color: #fff;
       display: none;
     }
+    .timer-controls button.pause-btn {
+      background: var(--warning-color);
+      color: #0f172a;
+      display: none;
+    }
 
-    /* Recherche */
+    /* Widget Tirage au Sort */
+    .draw-container {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .draw-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .draw-title {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      font-weight: bold;
+    }
+    .edit-toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--accent-color);
+      font-size: 0.7rem;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .class-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .class-btn {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      background: #334155;
+      color: #fff;
+      font-weight: bold;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .class-btn:hover {
+      background: var(--success-color);
+      transform: scale(1.02);
+    }
+    .edit-section {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 6px;
+    }
+    .edit-section select {
+      background: #0f172a;
+      color: #fff;
+      border: 1px solid #334155;
+      padding: 4px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+    .edit-section textarea {
+      width: 100%;
+      height: 50px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      color: #fff;
+      padding: 4px;
+      font-size: 0.75rem;
+      resize: vertical;
+    }
+
+    /* Modal / Roulette Pop-up */
+    .roulette-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .roulette-modal.active {
+      display: flex;
+    }
+    .roulette-card {
+      background: var(--card-bg);
+      border: 2px solid var(--accent-color);
+      border-radius: 16px;
+      padding: 30px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: popIn 0.3s ease-out;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .roulette-title {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .roulette-window {
+      height: 60px;
+      background: #0f172a;
+      border-radius: 8px;
+      border: 2px solid #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .roulette-name {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--accent-color);
+      transition: transform 0.05s ease-out;
+    }
+    .roulette-name.winner {
+      color: var(--success-color);
+      font-size: 1.6rem;
+      animation: winnerPulse 0.5s ease-in-out infinite alternate;
+    }
+    @keyframes winnerPulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.1); }
+    }
+    .close-roulette-btn {
+      padding: 8px 16px;
+      background: var(--accent-color);
+      color: #0f172a;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* Barre de recherche Google */
+    .search-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
     .search-box input {
       width: 100%;
       padding: 10px 16px;
@@ -127,13 +358,11 @@
       outline: none;
       background: var(--card-bg);
       color: #fff;
-      font-size: 0.9rem;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      font-size: 0.85rem;
     }
-    .search-box input:focus {
-      border-color: var(--accent-color);
-    }
-    /* Raccourcis Grid */
+    .search-box.google input:focus { border-color: var(--accent-color); }
+
+    /* Raccourcis */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
@@ -148,16 +377,15 @@
       font-size: 0.8rem;
       text-align: center;
       font-weight: 500;
-      transition: all 0.2s;
     }
     .card:hover {
       background: var(--card-hover);
       color: var(--accent-color);
-      transform: translateY(-2px);
     }
-    /* Blocs-Notes compacts */
+
+    /* Google Docs (Taille 150px) */
     .doc-container {
-      height: 180px;
+      height: 150px;
       background: var(--card-bg);
       border-radius: 10px;
       overflow: hidden;
@@ -171,7 +399,6 @@
       font-size: 0.8rem;
       color: #94a3b8;
       font-weight: bold;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
     .doc-container iframe {
       width: 100%;
@@ -179,67 +406,109 @@
       border: none;
     }
 
-    /* Responsive */
     @media (max-width: 900px) {
       .layout { flex-direction: column; overflow: auto; }
       body { overflow: auto; }
       .cabanga-container { height: 60vh; flex: none; }
       .sidebar { height: auto; flex: none; }
+      .top-widgets-row { flex-direction: column; }
     }
   </style>
 </head>
 <body>
 
   <div class="layout">
-    <!-- Zone Cabanga (2/3) -->
+    <!-- Zone Cabanga (2/3 de l'écran) -->
     <div class="cabanga-container">
-      <iframe src="https://app.cabanga.be" title="Cabanga"></iframe>
+      <div id="login-overlay" class="login-overlay">
+        <h2>Bienvenue sur votre Dashboard</h2>
+        <p style="color: #94a3b8;">Connectez-vous à Cabanga pour charger votre espace</p>
+        <button class="login-btn" onclick="openLoginWindow()">🔐 Se connecter à Cabanga</button>
+      </div>
+      <iframe id="cabanga-iframe" src="about:blank" title="Cabanga"></iframe>
     </div>
 
-    <!-- Sidebar Droite (1/3) -->
     <div class="sidebar">
-      <!-- Widget Horloge / Compte à rebours -->
-      <div class="widget-clock">
-        <div id="clock-display">00:00:00</div>
-        <div id="date">Chargement...</div>
+      <!-- Widgets Côte à Côte -->
+      <div class="top-widgets-row">
+        <!-- Widget Horloge, Météo (Fleurus) + Minuteur -->
+        <div class="widget-clock">
+          <div class="clock-section">
+            <div id="clock-display">00:00:00</div>
+            <div id="date">Chargement...</div>
+            <div id="weather" class="weather-info">Météo Fleurus...</div>
+          </div>
 
-        <!-- Formulaire Compte à rebours -->
-        <div class="timer-controls">
-          <input type="number" id="timer-min" placeholder="Min" min="0" max="999">
-          <input type="number" id="timer-sec" placeholder="Sec" min="0" max="59">
-          <button id="start-btn" onclick="startTimer()">Lancer</button>
-          <button id="reset-btn" class="reset-btn" onclick="resetTimer()">Horloge</button>
+          <div class="timer-section">
+            <div id="timer-display" style="display: none;">00:00:00</div>
+            <div class="timer-controls">
+              <input type="number" id="timer-min" placeholder="Min" min="0" max="999">
+              <input type="number" id="timer-sec" placeholder="Sec" min="0" max="59">
+              <button id="start-btn" onclick="startTimer()">▶</button>
+              <button id="pause-btn" class="pause-btn" onclick="pauseTimer()">⏸</button>
+              <button id="reset-btn" class="reset-btn" onclick="resetTimer()">⏹</button>
+            </div>
+            <div class="quick-timers">
+              <button class="quick-timer-btn" onclick="addMinutes(1)">+1m</button>
+              <button class="quick-timer-btn" onclick="addMinutes(5)">+5m</button>
+              <button class="quick-timer-btn" onclick="addMinutes(10)">+10m</button>
+              <button class="quick-timer-btn" onclick="quickTimer(25)">25m</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Widget Tirage au Sort par Classe -->
+        <div class="draw-container">
+          <div class="draw-header">
+            <span class="draw-title">🎲 Tirage</span>
+            <button class="edit-toggle-btn" onclick="toggleEdit()">⚙️ Listes</button>
+          </div>
+
+          <div class="class-buttons">
+            <button class="class-btn" onclick="startRoulette('5EQ3')">🎯 5EQ3</button>
+            <button class="class-btn" onclick="startRoulette('6EQ3')">🎯 6EQ3</button>
+            <button class="class-btn" onclick="startRoulette('6EQ4')">🎯 6EQ4</button>
+          </div>
+
+          <!-- Section d'édition -->
+          <div id="edit-section" class="edit-section">
+            <select id="edit-class-select" onchange="onSelectClassToEdit()">
+              <option value="5EQ3">5EQ3</option>
+              <option value="6EQ3">6EQ3</option>
+              <option value="6EQ4">6EQ4</option>
+            </select>
+            <textarea id="edit-students-text" placeholder="Prénoms séparés par une ligne ou virgule..."></textarea>
+          </div>
         </div>
       </div>
 
       <!-- Recherche Google -->
-      <form class="search-box" action="https://www.google.com/search" method="get">
-        <input type="text" name="q" placeholder="Rechercher sur Google..." autocomplete="off">
-      </form>
+      <div class="search-container">
+        <form class="search-box google" action="https://www.google.com/search" method="get" target="_blank">
+          <input type="text" name="q" placeholder="🔍 Rechercher sur Google..." autocomplete="off">
+        </form>
+      </div>
 
       <!-- Raccourcis -->
       <div class="grid">
         <a href="https://mail.google.com" target="_blank" class="card">Gmail</a>
         <a href="https://drive.google.com" target="_blank" class="card">Drive</a>
         <a href="https://youtube.com" target="_blank" class="card">YouTube</a>
-        <a href="https://gemini.google.com" target="_blank" class="card">Gemini</a>
         <a href="https://sheets.google.com" target="_blank" class="card">Sheets</a>
         <a href="https://classroom.google.com" target="_blank" class="card">Classroom</a>
       </div>
 
-      <!-- Bloc-Notes 1 -->
+      <!-- Google Docs -->
       <div class="doc-container">
         <div class="doc-header">📝 5EQ3</div>
         <iframe src="https://docs.google.com/document/d/1CaJsKxp4UemRsRMPKRHm972Hzycv5V5WPFVlGqqGVVQ/edit?rm=minimal"></iframe>
       </div>
 
-      <!-- Bloc-Notes 2 -->
       <div class="doc-container">
         <div class="doc-header">📝 6EQ3</div>
         <iframe src="https://docs.google.com/document/d/1a_WgrHCQn-Ybg3WUM0wVD9xT2iex4IUOGbaIE5hnstQ/edit?rm=minimal"></iframe>
       </div>
 
-      <!-- Bloc-Notes 3 -->
       <div class="doc-container">
         <div class="doc-header">📝 6EQ4</div>
         <iframe src="https://docs.google.com/document/d/1w_glBIeUALC0gacXvmKrz24orDMYQusZe9hWMXOOcpo/edit?rm=minimal"></iframe>
@@ -247,116 +516,263 @@
     </div>
   </div>
 
-  <script>
-    let timerInterval = null;
-    let isTimerActive = false;
-    let remainingSeconds = 0;
+  <!-- Pop-up Roulette -->
+  <div id="roulette-modal" class="roulette-modal">
+    <div class="roulette-card">
+      <div id="roulette-class-title" class="roulette-title">TIRAGE AU SORT</div>
+      <div class="roulette-window">
+        <div id="roulette-name" class="roulette-name">...</div>
+      </div>
+      <button id="close-roulette-btn" class="close-roulette-btn" style="display: none;" onclick="closeRoulette()">Fermer</button>
+    </div>
+  </div>
 
-    // Fonction d'alarme sonore (3 Bips successifs sans fichier externe)
+  <script>
+    // Listes intégrées en dur par défaut
+    const defaultStudentLists = {
+      '5EQ3': `AYOUB\nLORIS\nCELIA\nRAYAN\nLUKAS\nFIONA\nHUGO\nGWENVAEL\nMOURAD\nSERENA\nESTEBAN`,
+      '6EQ3': `YDRIS\nENRICO\nTHOMAS\nLUNA\nEROS\nDIEGO\nROBIN\nAXEL\nLUCIE\nEMMANUEL\nAKSEL\nKYLIANN\nMOHAMED\nALESSANDRO\nROMAIN\nGABRIEL`,
+      '6EQ4': `BRYAN\nKADIR\nNATHAN\nMARWA\nADAM\nEMILE\nLUCAS\nALEXIS\nJULIAN\nGABRIEL\nUMUTALI\nLIVIO\nLORYS\nALESSANDRO`
+    };
+
+    let studentLists = {};
+
+    // Chargement Cabanga & initialisations
+    document.addEventListener("DOMContentLoaded", () => {
+      const isLogged = localStorage.getItem('cabanga_logged');
+      if (isLogged === 'true') {
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('cabanga-iframe').src = 'https://app.cabanga.be';
+      }
+      loadWeatherFleurus();
+      initStudentLists();
+    });
+
+    function openLoginWindow() {
+      const authWindow = window.open('https://app.cabanga.be', 'CabangaLogin', 'width=600,height=700');
+      const checkWindowClosed = setInterval(() => {
+        if (authWindow && authWindow.closed) {
+          clearInterval(checkWindowClosed);
+          localStorage.setItem('cabanga_logged', 'true');
+          document.getElementById('login-overlay').style.display = 'none';
+          document.getElementById('cabanga-iframe').src = 'https://app.cabanga.be';
+        }
+      }, 500);
+    }
+
+    // Météo Fleurus, Belgique (lat: 50.48, lon: 4.54)
+    function loadWeatherFleurus() {
+      fetch('https://api.open-meteo.com/v1/forecast?latitude=50.48&longitude=4.54&current_weather=true')
+        .then(res => res.json())
+        .then(data => {
+          const temp = Math.round(data.current_weather.temperature);
+          document.getElementById('weather').textContent = `🌤️ Fleurus : ${temp}°C`;
+        })
+        .catch(() => {
+          document.getElementById('weather').textContent = "Fleurus : --°C";
+        });
+    }
+
+    // Gestion des Listes d'Élèves (Lit le LocalStorage puis retombe sur les défauts en dur)
+    function initStudentLists() {
+      const saved = localStorage.getItem('dashboard_classes');
+      if (saved) {
+        studentLists = JSON.parse(saved);
+      } else {
+        studentLists = { ...defaultStudentLists };
+      }
+      onSelectClassToEdit();
+      document.getElementById('edit-students-text').addEventListener('input', (e) => {
+        const cls = document.getElementById('edit-class-select').value;
+        studentLists[cls] = e.target.value;
+        localStorage.setItem('dashboard_classes', JSON.stringify(studentLists));
+      });
+    }
+
+    function toggleEdit() {
+      const editSec = document.getElementById('edit-section');
+      editSec.style.display = (editSec.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    function onSelectClassToEdit() {
+      const cls = document.getElementById('edit-class-select').value;
+      document.getElementById('edit-students-text').value = studentLists[cls] || defaultStudentLists[cls] || '';
+    }
+
+    // Roulette Animée Pop-up
+    let rouletteInterval = null;
+
+    function startRoulette(className) {
+      const raw = studentLists[className] || defaultStudentLists[className] || '';
+      const list = raw.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
+      
+      if (list.length === 0) {
+        alert(`Aucun élève enregistré pour ${className}. Cliquez sur "⚙️ Listes" pour en ajouter.`);
+        return;
+      }
+
+      const modal = document.getElementById('roulette-modal');
+      const nameEl = document.getElementById('roulette-name');
+      const titleEl = document.getElementById('roulette-class-title');
+      const closeBtn = document.getElementById('close-roulette-btn');
+
+      titleEl.textContent = `TIRAGE EN COURS (${className})`;
+      nameEl.className = "roulette-name";
+      closeBtn.style.display = "none";
+      modal.classList.add('active');
+
+      let speed = 40;
+      let totalTime = 0;
+      const duration = 3000;
+
+      function spin() {
+        const randomIndex = Math.floor(Math.random() * list.length);
+        nameEl.textContent = list[randomIndex];
+        totalTime += speed;
+
+        if (totalTime < duration) {
+          speed += 5;
+          rouletteInterval = setTimeout(spin, speed);
+        } else {
+          const winner = list[Math.floor(Math.random() * list.length)];
+          nameEl.textContent = `🎉 ${winner}`;
+          nameEl.classList.add('winner');
+          titleEl.textContent = `ÉLÈVE DÉSIGNÉ (${className})`;
+          closeBtn.style.display = "inline-block";
+        }
+      }
+
+      spin();
+    }
+
+    function closeRoulette() {
+      document.getElementById('roulette-modal').classList.remove('active');
+      clearTimeout(rouletteInterval);
+    }
+
+    // Horloge
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock-display').textContent = now.toLocaleTimeString('fr-FR', { 
+        hour: '2-digit', minute: '2-digit', second: '2-digit' 
+      });
+      document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', { 
+        weekday: 'short', day: 'numeric', month: 'short' 
+      });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Minuteur
+    let timerInterval = null;
+    let remainingSeconds = 0;
+    let isPaused = false;
+
     function playAlarmSound() {
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
         const delays = [0, 0.25, 0.5];
-
         delays.forEach(delay => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
-          
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(880, audioCtx.currentTime + delay); // Fréquence 880Hz
-          
+          osc.frequency.setValueAtTime(880, audioCtx.currentTime + delay);
           gain.gain.setValueAtTime(0.3, audioCtx.currentTime + delay);
           gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + delay + 0.2);
-          
           osc.connect(gain);
           gain.connect(audioCtx.destination);
-          
           osc.start(audioCtx.currentTime + delay);
           osc.stop(audioCtx.currentTime + delay + 0.2);
         });
-      } catch (e) {
-        console.log("Erreur audio :", e);
-      }
+      } catch (e) { console.log("Erreur audio :", e); }
     }
 
-    // Mise à jour Horloge / Timer
-    function updateDisplay() {
-      const display = document.getElementById('clock-display');
+    function formatTime(totalSeconds) {
+      const hrs = Math.floor(totalSeconds / 3600);
+      const mins = Math.floor((totalSeconds % 3600) / 60);
+      const secs = totalSeconds % 60;
+      return String(hrs).padStart(2, '0') + ':' + String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+    }
 
-      if (!isTimerActive) {
-        const now = new Date();
-        display.textContent = now.toLocaleTimeString('fr-FR', { 
-          hour: '2-digit', 
-          minute: '2-digit', 
-          second: '2-digit' 
-        });
-        document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', { 
-          weekday: 'long', 
-          day: 'numeric', 
-          month: 'long' 
-        });
-      } else {
-        if (remainingSeconds <= 0) {
-          clearInterval(timerInterval);
-          display.textContent = "00:00:00";
-          display.className = "timer-ended";
-          document.getElementById('date').textContent = "⚠️ Temps écoulé !";
-          playAlarmSound();
-          return;
-        }
-
-        remainingSeconds--;
-        const hrs = Math.floor(remainingSeconds / 3600);
-        const mins = Math.floor((remainingSeconds % 3600) / 60);
-        const secs = remainingSeconds % 60;
-
-        display.textContent = 
-          String(hrs).padStart(2, '0') + ':' +
-          String(mins).padStart(2, '0') + ':' +
-          String(secs).padStart(2, '0');
+    function updateTimer() {
+      const timerDisplay = document.getElementById('timer-display');
+      if (remainingSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerDisplay.textContent = "⚠️ Terminé !";
+        timerDisplay.className = "timer-ended";
+        document.getElementById('pause-btn').style.display = 'none';
+        playAlarmSound();
+        return;
       }
+      timerDisplay.textContent = formatTime(remainingSeconds);
+      remainingSeconds--;
+    }
+
+    function startTimerCustom(totalSec) {
+      if (totalSec <= 0) return;
+      remainingSeconds = totalSec;
+      isPaused = false;
+      const timerDisplay = document.getElementById('timer-display');
+      timerDisplay.style.display = 'block';
+      timerDisplay.className = "";
+      
+      document.getElementById('start-btn').style.display = 'none';
+      document.getElementById('pause-btn').style.display = 'inline-block';
+      document.getElementById('pause-btn').textContent = '⏸';
+      document.getElementById('reset-btn').style.display = 'inline-block';
+      
+      clearInterval(timerInterval);
+      updateTimer();
+      timerInterval = setInterval(updateTimer, 1000);
     }
 
     function startTimer() {
       const minInput = parseInt(document.getElementById('timer-min').value) || 0;
       const secInput = parseInt(document.getElementById('timer-sec').value) || 0;
+      startTimerCustom((minInput * 60) + secInput);
+    }
 
-      const totalSec = (minInput * 60) + secInput;
-      if (totalSec <= 0) return;
+    function pauseTimer() {
+      const pauseBtn = document.getElementById('pause-btn');
+      if (!isPaused) {
+        clearInterval(timerInterval);
+        isPaused = true;
+        pauseBtn.textContent = '▶';
+      } else {
+        isPaused = false;
+        pauseBtn.textContent = '⏸';
+        timerInterval = setInterval(updateTimer, 1000);
+      }
+    }
 
-      remainingSeconds = totalSec;
-      isTimerActive = true;
+    function addMinutes(mins) {
+      if (timerInterval && remainingSeconds > 0) {
+        remainingSeconds += mins * 60;
+        document.getElementById('timer-display').textContent = formatTime(remainingSeconds);
+      } else {
+        quickTimer(mins);
+      }
+    }
 
-      const display = document.getElementById('clock-display');
-      display.className = "timer-active";
-
-      document.getElementById('start-btn').style.display = 'none';
-      document.getElementById('reset-btn').style.display = 'inline-block';
-
-      updateDisplay();
-      clearInterval(timerInterval);
-      timerInterval = setInterval(updateDisplay, 1000);
+    function quickTimer(minutes) {
+      document.getElementById('timer-min').value = minutes;
+      document.getElementById('timer-sec').value = 0;
+      startTimerCustom(minutes * 60);
     }
 
     function resetTimer() {
       clearInterval(timerInterval);
-      isTimerActive = false;
-
-      const display = document.getElementById('clock-display');
-      display.className = "";
-
+      isPaused = false;
+      const timerDisplay = document.getElementById('timer-display');
+      timerDisplay.style.display = 'none';
+      timerDisplay.className = "";
       document.getElementById('timer-min').value = "";
       document.getElementById('timer-sec').value = "";
       document.getElementById('start-btn').style.display = 'inline-block';
+      document.getElementById('pause-btn').style.display = 'none';
       document.getElementById('reset-btn').style.display = 'none';
-
-      updateDisplay();
-      timerInterval = setInterval(updateDisplay, 1000);
     }
-
-    // Lancement par défaut de l'horloge
-    timerInterval = setInterval(updateDisplay, 1000);
-    updateDisplay();
   </script>
 </body>
 </html>
