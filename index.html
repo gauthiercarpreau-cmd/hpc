@@ -14,6 +14,7 @@
       --danger-color: #ef4444;
       --warning-color: #f59e0b;
       --success-color: #10b981;
+      --casino-gold: #fbbf24;
     }
     * {
       box-sizing: border-box;
@@ -272,76 +273,121 @@
       resize: vertical;
     }
 
-    /* Modal / Roulette Pop-up */
-    .roulette-modal {
+    /* Pop-up Casino Grand Format (50% Écran) */
+    .casino-modal {
       display: none;
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(4px);
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(6px);
       z-index: 100;
       align-items: center;
       justify-content: center;
     }
-    .roulette-modal.active {
+    .casino-modal.active {
       display: flex;
     }
-    .roulette-card {
-      background: var(--card-bg);
-      border: 2px solid var(--accent-color);
-      border-radius: 16px;
-      padding: 30px;
-      width: 320px;
+    .casino-card {
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border: 4px solid var(--casino-gold);
+      border-radius: 24px;
+      padding: 32px;
+      width: 55vw;
+      min-width: 500px;
+      max-width: 900px;
+      min-height: 50vh;
       text-align: center;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 50px rgba(251, 191, 36, 0.35);
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      animation: popIn 0.3s ease-out;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      animation: popIn 0.15s ease-out;
     }
     @keyframes popIn {
-      from { transform: scale(0.8); opacity: 0; }
+      from { transform: scale(0.9); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
-    .roulette-title {
-      font-size: 0.9rem;
-      color: #94a3b8;
+    .casino-title {
+      font-size: 1.8rem;
+      color: var(--casino-gold);
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 3px;
+      font-weight: 900;
+      text-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
     }
-    .roulette-window {
-      height: 60px;
-      background: #0f172a;
-      border-radius: 8px;
-      border: 2px solid #334155;
+    .casino-subtitle {
+      font-size: 1rem;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+    
+    /* Conteneur des Rouleaux Agrandis */
+    .slot-machine-container {
+      width: 100%;
+      background: #000;
+      border: 4px solid #334155;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: inset 0 0 25px rgba(0,0,0,0.9);
+      position: relative;
+    }
+    .slot-reel {
+      flex: 1;
+      height: 130px;
+      background: #1e293b;
+      border: 2px solid var(--accent-color);
+      border-radius: 12px;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-    }
-    .roulette-name {
-      font-size: 1.4rem;
+      font-size: 1.8rem;
       font-weight: 800;
-      color: var(--accent-color);
-      transition: transform 0.05s ease-out;
+      color: #fff;
+      text-shadow: 0 0 8px var(--accent-color);
+      position: relative;
+      padding: 0 8px;
+      word-break: break-word;
+      white-space: nowrap;
     }
-    .roulette-name.winner {
+    .slot-reel.winner-reel {
+      border-color: var(--success-color);
+      color: var(--casino-gold);
+      text-shadow: 0 0 15px var(--casino-gold);
+      background: #0f172a;
+    }
+    
+    .winner-announcement {
+      font-size: 2.2rem;
+      font-weight: 900;
       color: var(--success-color);
-      font-size: 1.6rem;
-      animation: winnerPulse 0.5s ease-in-out infinite alternate;
+      min-height: 1.3em;
+      text-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
     }
-    @keyframes winnerPulse {
-      from { transform: scale(1); }
-      to { transform: scale(1.1); }
+
+    .modal-btn-group {
+      display: flex;
+      gap: 12px;
     }
-    .close-roulette-btn {
-      padding: 8px 16px;
+    .close-casino-btn, .reset-list-btn {
+      padding: 12px 28px;
       background: var(--accent-color);
       color: #0f172a;
       font-weight: bold;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
+      font-size: 1.1rem;
+      transition: transform 0.1s;
+    }
+    .close-casino-btn:hover { transform: scale(1.05); }
+    .reset-list-btn {
+      background: var(--warning-color);
     }
 
     /* Barre de recherche Google */
@@ -412,6 +458,7 @@
       .cabanga-container { height: 60vh; flex: none; }
       .sidebar { height: auto; flex: none; }
       .top-widgets-row { flex-direction: column; }
+      .casino-card { width: 90vw; min-width: auto; }
     }
   </style>
 </head>
@@ -460,14 +507,14 @@
         <!-- Widget Tirage au Sort par Classe -->
         <div class="draw-container">
           <div class="draw-header">
-            <span class="draw-title">🎲 Tirage</span>
+            <span class="draw-title">🎲 Tirage Casino</span>
             <button class="edit-toggle-btn" onclick="toggleEdit()">⚙️ Listes</button>
           </div>
 
           <div class="class-buttons">
-            <button class="class-btn" onclick="startRoulette('5EQ3')">🎯 5EQ3</button>
-            <button class="class-btn" onclick="startRoulette('6EQ3')">🎯 6EQ3</button>
-            <button class="class-btn" onclick="startRoulette('6EQ4')">🎯 6EQ4</button>
+            <button class="class-btn" onclick="startCasinoSlot('5EQ3')">🎰 5EQ3</button>
+            <button class="class-btn" onclick="startCasinoSlot('6EQ3')">🎰 6EQ3</button>
+            <button class="class-btn" onclick="startCasinoSlot('6EQ4')">🎰 6EQ4</button>
           </div>
 
           <!-- Section d'édition -->
@@ -478,6 +525,7 @@
               <option value="6EQ4">6EQ4</option>
             </select>
             <textarea id="edit-students-text" placeholder="Prénoms séparés par une ligne ou virgule..."></textarea>
+            <button class="reset-list-btn" onclick="resetCurrentClassList()" style="padding: 4px; font-size: 0.7rem;">🔄 Réinitialiser la classe</button>
           </div>
         </div>
       </div>
@@ -516,14 +564,24 @@
     </div>
   </div>
 
-  <!-- Pop-up Roulette -->
-  <div id="roulette-modal" class="roulette-modal">
-    <div class="roulette-card">
-      <div id="roulette-class-title" class="roulette-title">TIRAGE AU SORT</div>
-      <div class="roulette-window">
-        <div id="roulette-name" class="roulette-name">...</div>
+  <!-- Pop-up Casino / Machine à sous Grand Format -->
+  <div id="casino-modal" class="casino-modal">
+    <div class="casino-card">
+      <div id="casino-class-title" class="casino-title">🎰 CASINO JACKPOT</div>
+      <div id="casino-subtitle" class="casino-subtitle"></div>
+      
+      <div class="slot-machine-container">
+        <div id="reel-1" class="slot-reel">???</div>
+        <div id="reel-2" class="slot-reel">???</div>
+        <div id="reel-3" class="slot-reel">???</div>
       </div>
-      <button id="close-roulette-btn" class="close-roulette-btn" style="display: none;" onclick="closeRoulette()">Fermer</button>
+
+      <div id="winner-text" class="winner-announcement"></div>
+      
+      <div class="modal-btn-group">
+        <button id="reset-modal-btn" class="reset-list-btn" style="display: none;" onclick="resetCurrentClassListAndReopen()">🔄 Recommencer la classe</button>
+        <button id="close-casino-btn" class="close-casino-btn" style="display: none;" onclick="closeCasino()">Fermer</button>
+      </div>
     </div>
   </div>
 
@@ -536,6 +594,7 @@
     };
 
     let studentLists = {};
+    let activeClass = '';
 
     // Chargement Cabanga & initialisations
     document.addEventListener("DOMContentLoaded", () => {
@@ -573,13 +632,13 @@
         });
     }
 
-    // Gestion des Listes d'Élèves (Lit le LocalStorage puis retombe sur les défauts en dur)
+    // Gestion des Listes d'Élèves
     function initStudentLists() {
       const saved = localStorage.getItem('dashboard_classes');
       if (saved) {
         studentLists = JSON.parse(saved);
       } else {
-        studentLists = { ...defaultStudentLists };
+        studentLists = JSON.parse(JSON.stringify(defaultStudentLists));
       }
       onSelectClassToEdit();
       document.getElementById('edit-students-text').addEventListener('input', (e) => {
@@ -596,58 +655,131 @@
 
     function onSelectClassToEdit() {
       const cls = document.getElementById('edit-class-select').value;
-      document.getElementById('edit-students-text').value = studentLists[cls] || defaultStudentLists[cls] || '';
+      document.getElementById('edit-students-text').value = studentLists[cls] || '';
     }
 
-    // Roulette Animée Pop-up
-    let rouletteInterval = null;
+    function resetCurrentClassList() {
+      const cls = document.getElementById('edit-class-select').value;
+      studentLists[cls] = defaultStudentLists[cls];
+      localStorage.setItem('dashboard_classes', JSON.stringify(studentLists));
+      onSelectClassToEdit();
+    }
 
-    function startRoulette(className) {
-      const raw = studentLists[className] || defaultStudentLists[className] || '';
-      const list = raw.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
+    function resetCurrentClassListAndReopen() {
+      studentLists[activeClass] = defaultStudentLists[activeClass];
+      localStorage.setItem('dashboard_classes', JSON.stringify(studentLists));
+      onSelectClassToEdit();
+      closeCasino();
+      startCasinoSlot(activeClass);
+    }
+
+    // Adaptateur automatique de la taille de texte pour les longs prénoms
+    function setReelText(reelEl, name) {
+      reelEl.textContent = name;
+      if (name.length > 10) {
+        reelEl.style.fontSize = "1.1rem";
+      } else if (name.length > 7) {
+        reelEl.style.fontSize = "1.4rem";
+      } else {
+        reelEl.style.fontSize = "1.8rem";
+      }
+    }
+
+    // --- MOTEUR MACHINE À SOUS ULTRA-RAPIDE ---
+    let isSpinning = false;
+
+    function startCasinoSlot(className) {
+      if (isSpinning) return;
+      activeClass = className;
+
+      const raw = studentLists[className] || '';
+      let list = raw.split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0);
+      const totalInitial = (defaultStudentLists[className] || '').split(/[\n,]+/).map(s => s.trim()).filter(s => s.length > 0).length;
+
+      const modal = document.getElementById('casino-modal');
+      const titleEl = document.getElementById('casino-class-title');
+      const subTitleEl = document.getElementById('casino-subtitle');
+      const winnerText = document.getElementById('winner-text');
+      const closeBtn = document.getElementById('close-casino-btn');
+      const resetModalBtn = document.getElementById('reset-modal-btn');
       
+      const r1 = document.getElementById('reel-1');
+      const r2 = document.getElementById('reel-2');
+      const r3 = document.getElementById('reel-3');
+
+      r1.classList.remove('winner-reel');
+      r2.classList.remove('winner-reel');
+      r3.classList.remove('winner-reel');
+
       if (list.length === 0) {
-        alert(`Aucun élève enregistré pour ${className}. Cliquez sur "⚙️ Listes" pour en ajouter.`);
+        titleEl.textContent = `CLASSE ${className} ÉPUISÉE`;
+        subTitleEl.textContent = "Tous les élèves ont déjà été désignés !";
+        winnerText.textContent = "🎉 Fin de la liste !";
+        resetModalBtn.style.display = "inline-block";
+        closeBtn.style.display = "inline-block";
+        setReelText(r1, "---");
+        setReelText(r2, "FIN");
+        setReelText(r3, "---");
+        modal.classList.add('active');
         return;
       }
 
-      const modal = document.getElementById('roulette-modal');
-      const nameEl = document.getElementById('roulette-name');
-      const titleEl = document.getElementById('roulette-class-title');
-      const closeBtn = document.getElementById('close-roulette-btn');
-
-      titleEl.textContent = `TIRAGE EN COURS (${className})`;
-      nameEl.className = "roulette-name";
+      titleEl.textContent = `🎰 TIRAGE ${className}`;
+      subTitleEl.textContent = `Élèves restants : ${list.length} / ${totalInitial}`;
+      winnerText.textContent = "";
       closeBtn.style.display = "none";
+      resetModalBtn.style.display = "none";
       modal.classList.add('active');
 
-      let speed = 40;
-      let totalTime = 0;
-      const duration = 3000;
+      isSpinning = true;
 
-      function spin() {
-        const randomIndex = Math.floor(Math.random() * list.length);
-        nameEl.textContent = list[randomIndex];
-        totalTime += speed;
+      // Sélectionner à l'avance le vainqueur
+      const winnerIndex = Math.floor(Math.random() * list.length);
+      const winner = list[winnerIndex];
 
-        if (totalTime < duration) {
-          speed += 5;
-          rouletteInterval = setTimeout(spin, speed);
-        } else {
-          const winner = list[Math.floor(Math.random() * list.length)];
-          nameEl.textContent = `🎉 ${winner}`;
-          nameEl.classList.add('winner');
-          titleEl.textContent = `ÉLÈVE DÉSIGNÉ (${className})`;
+      // Animation ultra-rapide (défilement chaotique pendant 1 seconde)
+      const duration = 1000;
+      const startTime = Date.now();
+
+      const spinInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        
+        // Affichage aléatoire rapide
+        setReelText(r1, list[Math.floor(Math.random() * list.length)]);
+        setReelText(r2, list[Math.floor(Math.random() * list.length)]);
+        setReelText(r3, list[Math.floor(Math.random() * list.length)]);
+
+        if (elapsed >= duration) {
+          clearInterval(spinInterval);
+          
+          // Fixer le résultat gagnant sur les 3 rouleaux
+          setReelText(r1, winner);
+          setReelText(r2, winner);
+          setReelText(r3, winner);
+
+          r1.classList.add('winner-reel');
+          r2.classList.add('winner-reel');
+          r3.classList.add('winner-reel');
+
+          // Retirer l'élève de la liste (Anti-répétition)
+          list.splice(winnerIndex, 1);
+          studentLists[activeClass] = list.join('\n');
+          localStorage.setItem('dashboard_classes', JSON.stringify(studentLists));
+          onSelectClassToEdit();
+
+          winnerText.textContent = `🎉 ${winner} !`;
           closeBtn.style.display = "inline-block";
+          if (list.length === 0) {
+            resetModalBtn.style.display = "inline-block";
+          }
+          isSpinning = false;
         }
-      }
-
-      spin();
+      }, 50);
     }
 
-    function closeRoulette() {
-      document.getElementById('roulette-modal').classList.remove('active');
-      clearTimeout(rouletteInterval);
+    function closeCasino() {
+      if (isSpinning) return;
+      document.getElementById('casino-modal').classList.remove('active');
     }
 
     // Horloge
