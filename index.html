@@ -125,6 +125,23 @@
       font-weight: 500;
     }
 
+    /* Style du Décompte Sonnerie */
+    .next-bell-info {
+      font-size: 0.75rem;
+      color: var(--casino-gold);
+      font-weight: 700;
+      margin-top: 4px;
+      background: rgba(251, 191, 36, 0.1);
+      padding: 4px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(251, 191, 36, 0.2);
+    }
+    .next-bell-info.bell-ringing {
+      color: #fff;
+      background: var(--success-color);
+      animation: pulse 0.5s infinite;
+    }
+
     /* Minuteur */
     .timer-section {
       display: flex;
@@ -478,12 +495,13 @@
     <div class="sidebar">
       <!-- Widgets Côte à Côte -->
       <div class="top-widgets-row">
-        <!-- Widget Horloge, Météo (Fleurus) + Minuteur -->
+        <!-- Widget Horloge, Météo + Décompte Sonnerie + Minuteur -->
         <div class="widget-clock">
           <div class="clock-section">
             <div id="clock-display">00:00:00</div>
             <div id="date">Chargement...</div>
             <div id="weather" class="weather-info">Météo Fleurus...</div>
+            <div id="bell-countdown" class="next-bell-info">🔔 Calcul sonnerie...</div>
           </div>
 
           <div class="timer-section">
@@ -593,6 +611,13 @@
       '6EQ4': `BRYAN\nKADIR\nNATHAN\nMARWA\nADAM\nEMILE\nLUCAS\nALEXIS\nJULIAN\nGABRIEL\nUMUTALI\nLIVIO\nLORYS\nALESSANDRO\nDIEGO`
     };
 
+    // Heures des sonneries
+    const bellSchedule = [
+      "08:20", "09:10", "09:58", "10:13", 
+      "11:02", "11:50", "12:40", "13:30", 
+      "14:20", "14:30", "15:20", "16:10", "17:00"
+    ];
+
     let studentLists = {};
     let activeClass = '';
 
@@ -630,6 +655,79 @@
         .catch(() => {
           document.getElementById('weather').textContent = "Fleurus : --°C";
         });
+    }
+
+    // Gestion du Décompte Sonnerie
+    let lastRingTime = "";
+
+    function updateBellCountdown() {
+      const now = new Date();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      const currentSeconds = now.getSeconds();
+      
+      const bellEl = document.getElementById('bell-countdown');
+      
+      let nextBellTimeStr = null;
+      let nextBellTotalSec = null;
+
+      for (let timeStr of bellSchedule) {
+        const [h, m] = timeStr.split(':').map(Number);
+        const bellTotalMin = h * 60 + m;
+        
+        if (bellTotalMin > currentMinutes || (bellTotalMin === currentMinutes && currentSeconds === 0)) {
+          nextBellTimeStr = timeStr;
+          const diffMin = bellTotalMin - currentMinutes - 1;
+          const diffSec = 60 - currentSeconds;
+          nextBellTotalSec = diffMin * 60 + diffSec;
+          break;
+        }
+      }
+
+      if (nextBellTimeStr) {
+        const displayMin = Math.floor(nextBellTotalSec / 60);
+        const displaySec = nextBellTotalSec % 60;
+
+        // Si la sonnerie retentit à l'instant pile
+        if (nextBellTotalSec === 60 || nextBellTotalSec === 0) {
+          bellEl.textContent = `🔔 SONNERIE ! (${nextBellTimeStr})`;
+          bellEl.classList.add('bell-ringing');
+          if (lastRingTime !== nextBellTimeStr) {
+            playBellSound();
+            lastRingTime = nextBellTimeStr;
+          }
+        } else {
+          bellEl.classList.remove('bell-ringing');
+          const minFormatted = displayMin > 0 ? `${displayMin}m ` : '';
+          const secFormatted = `${displaySec}s`;
+          const formattedBellTime = nextBellTimeStr.replace(':', 'h');
+          bellEl.textContent = `🔔 Prochaine : ${formattedBellTime} (${minFormatted}${secFormatted})`;
+        }
+      } else {
+        bellEl.classList.remove('bell-ringing');
+        bellEl.textContent = "🎉 Fin des cours pour aujourd'hui";
+      }
+    }
+
+    function playBellSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // Do5
+        osc.frequency.exponentialRampToValueAtTime(659.25, audioCtx.currentTime + 0.3); // Mi5
+
+        gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 1.5);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.5);
+      } catch (e) { console.log("Erreur sonnerie :", e); }
     }
 
     // Gestion des Listes d'Élèves
@@ -791,6 +889,9 @@
       document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', { 
         weekday: 'short', day: 'numeric', month: 'short' 
       });
+      
+      // Mise à jour du décompte de la sonnerie
+      updateBellCountdown();
     }
     setInterval(updateClock, 1000);
     updateClock();
